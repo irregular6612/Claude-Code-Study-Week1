@@ -157,29 +157,9 @@ export function HeaderActions({ user, projectId }: HeaderActionsProps) {
     handleDownload();
   };
 
-  if (!user) {
-    return (
-      <>
-        <div className="flex gap-2">
-          <Button variant="outline" className="h-8" onClick={handleSignInClick}>
-            Sign In
-          </Button>
-          <Button className="h-8" onClick={handleSignUpClick}>
-            Sign Up
-          </Button>
-        </div>
-        <AuthDialog
-          open={authDialogOpen}
-          onOpenChange={setAuthDialogOpen}
-          defaultMode={authMode}
-        />
-      </>
-    );
-  }
-
   return (
     <div className="flex items-center gap-2">
-      {!initialLoading && (
+      {user && !initialLoading && (
         <Popover open={projectsOpen} onOpenChange={setProjectsOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline" className="h-8 gap-2" role="combobox">
@@ -220,10 +200,12 @@ export function HeaderActions({ user, projectId }: HeaderActionsProps) {
         </Popover>
       )}
 
-      <Button className="flex items-center gap-2 h-8" onClick={handleNewDesign}>
-        <Plus className="h-4 w-4" />
-        New Design
-      </Button>
+      {user && (
+        <Button className="flex items-center gap-2 h-8" onClick={handleNewDesign}>
+          <Plus className="h-4 w-4" />
+          New Design
+        </Button>
+      )}
 
       <Button
         variant="outline"
@@ -243,15 +225,31 @@ export function HeaderActions({ user, projectId }: HeaderActionsProps) {
         Download ZIP
       </Button>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8"
-        onClick={handleSignOut}
-        title="Sign out"
-      >
-        <LogOut className="h-4 w-4" />
-      </Button>
+      {!user ? (
+        <>
+          <Button variant="outline" className="h-8" onClick={handleSignInClick}>
+            Sign In
+          </Button>
+          <Button className="h-8" onClick={handleSignUpClick}>
+            Sign Up
+          </Button>
+          <AuthDialog
+            open={authDialogOpen}
+            onOpenChange={setAuthDialogOpen}
+            defaultMode={authMode}
+          />
+        </>
+      ) : (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8"
+          onClick={handleSignOut}
+          title="Sign out"
+        >
+          <LogOut className="h-4 w-4" />
+        </Button>
+      )}
 
       <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
         <DialogContent>

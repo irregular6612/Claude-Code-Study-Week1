@@ -111,3 +111,31 @@ Test files colocated with components in `__tests__` directories. Example: `src/c
 
 ## Anonymous User Tracking
 `src/lib/anon-work-tracker.ts` assigns temporary IDs to anonymous users for tracking work sessions without authentication.
+
+## UIGen Project Learnings
+
+### Context Patterns
+- `FileSystemProvider` must wrap components using `useFileSystem()`
+- `reset()` clears files + selectedFile + triggers refresh
+- `getAllFiles()` returns `Map<string, string>` where keys are paths like `/src/App.tsx`
+
+### Dialog Component
+- Uses Radix UI, import from `@/components/ui/dialog`
+- `DialogContent` contains all modal content
+- Use `DialogDescription` for accessibility (warning messages)
+- `variant="destructive"` for dangerous action buttons
+
+### File System API
+- `getAllFiles()` returns `Map<string, string>`
+- Paths have leading slash — remove with `path.slice(1)` before adding to ZIP
+- `reset()` clears all files and resets selected file state
+
+### Keyboard Events in React
+- Always cleanup listeners in `useEffect` return
+- Check `e.metaKey` (Mac) OR `e.ctrlKey` (Windows) for modifier keys
+- Call `e.preventDefault()` to avoid browser default behavior (e.g., Cmd+K opens browser search)
+
+### JSZip Usage
+- `zip.file(path, content)` adds files; `zip.generateAsync({ type: "blob" })` creates downloadable blob
+- Use `URL.createObjectURL` + anchor element click pattern for downloads
+- Always call `URL.revokeObjectURL` after download to free memory
